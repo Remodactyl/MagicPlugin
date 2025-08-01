@@ -13,6 +13,7 @@ public enum TargetType {
     OTHER,
     ANY_ENTITY,
     OTHER_ENTITY,
+    DISPLAY_ENTITY,
     SELF(false),
     SELECT(false),
     SELECT_ENTITY(false),

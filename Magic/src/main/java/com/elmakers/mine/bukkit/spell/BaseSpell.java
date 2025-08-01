@@ -242,7 +242,7 @@ public class BaseSpell implements MageSpell, Cloneable {
     protected boolean ignoreRegionOverrides     = false;
     protected boolean castOnNoTarget            = true;
     protected boolean refundOnNoTarget          = false;
-    protected boolean bypassDeactivate          = false;
+    public boolean bypassDeactivate          = false;
     protected boolean bypassAll                 = false;
     protected boolean quiet                     = false;
     protected boolean loud                      = false;
@@ -3466,6 +3466,9 @@ public class BaseSpell implements MageSpell, Cloneable {
 
     public boolean getTargetsCaster() {
         return targetSelf;
+    }
+    public boolean bypassesDeactivate() {
+        return bypassDeactivate;
     }
 
     public void setTargetsCaster(boolean target) {

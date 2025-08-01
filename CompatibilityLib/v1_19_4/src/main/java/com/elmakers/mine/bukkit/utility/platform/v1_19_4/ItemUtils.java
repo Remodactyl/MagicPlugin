@@ -225,4 +225,20 @@ public class ItemUtils extends ItemUtilsBase {
         }
         return null;
     }
+
+    @Override
+    public void setCustomModelData(ItemStack itemStack, int customModelData) {
+        if (itemStack == null)
+        {
+            return;
+        }
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null)
+        {
+            return;
+        }
+
+        itemMeta.setCustomModelData(customModelData);
+        itemStack.setItemMeta(itemMeta);
+    }
 }

@@ -98,6 +98,7 @@ public interface Spell extends SpellTemplate {
     long getProgressLevel();
     boolean cancelOnNoPermission();
     boolean cancelOnNoWand();
+    boolean bypassesDeactivate();
     boolean reactivate();
     @Nonnull
     ConfigurationSection getVariables();

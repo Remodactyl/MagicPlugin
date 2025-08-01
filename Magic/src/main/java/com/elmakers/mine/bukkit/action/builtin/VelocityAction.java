@@ -3,6 +3,7 @@ package com.elmakers.mine.bukkit.action.builtin;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -38,6 +39,9 @@ public class VelocityAction extends BaseSpellAction
     private double yOffset;
     private int exemptionDuration;
     private double maxMagnitude;
+    private boolean clearX;
+    private boolean clearY;
+    private boolean clearZ;
     private double maxMagnitudeSquared;
     private boolean additive;
     private Vector direction;
@@ -54,6 +58,9 @@ public class VelocityAction extends BaseSpellAction
         maxSpeedAtElevation = parameters.getInt("max_altitude", 64);
         minSpeed = parameters.getDouble("min_speed", 0);
         maxSpeed = parameters.getDouble("max_speed", 0);
+        clearX = parameters.getBoolean("clear_x", false);
+        clearY = parameters.getBoolean("clear_y", false);
+        clearZ = parameters.getBoolean("clear_z", false);
         pushDirection = parameters.getDouble("push", 0);
         yOffset = parameters.getDouble("y_offset", 0);
         direction = ConfigurationUtils.getVector(parameters, "direction");
@@ -167,6 +174,16 @@ public class VelocityAction extends BaseSpellAction
                 + ChatColor.AQUA + " to " + ChatColor.DARK_AQUA + entity.getType()
                 + ChatColor.AQUA + " from magnitude of " + ChatColor.BLUE + magnitude,
                 11);
+
+        if(clearX) {
+            velocity.setX(0);
+        }
+        if(clearY) {
+            velocity.setY(0);
+        }
+        if(clearZ) {
+            velocity.setZ(0);
+        }
 
         if (!MathUtils.isFinite(velocity.getX())
                 || !MathUtils.isFinite(velocity.getY())

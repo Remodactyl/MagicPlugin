@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.elmakers.mine.bukkit.magic.SourceLocation;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -33,6 +34,7 @@ public class RectOfEffectAction extends CompoundEntityAction
     protected boolean targetSource;
     protected boolean ignoreModified;
     protected boolean randomChoose;
+    protected SourceLocation sourceLocation;
 
 
     //Temporary values -=@
@@ -55,6 +57,8 @@ public class RectOfEffectAction extends CompoundEntityAction
         targetSource = parameters.getBoolean("target_source", true);
         ignoreModified = parameters.getBoolean("ignore_modified", false);
         randomChoose = parameters.getBoolean("random_choose", false);
+
+        sourceLocation = new SourceLocation(parameters);
 
         super.prepare(context, parameters);
     }
@@ -81,14 +85,19 @@ public class RectOfEffectAction extends CompoundEntityAction
         context.addWork((int)Math.ceil(volume / 10.0));
         //@=-
 
-        //Log debug -=@
+        //Set up starting location. Use target location as base, but combine it with rotation of source. -=@
         Mage mage = context.getMage();
-        Location sourceLocation = context.getTargetLocation();
+        Location rectOrigin = context.getTargetLocation();
+        rectOrigin.setYaw(sourceLocation.getLocation(context).getYaw());
+        rectOrigin.setPitch(sourceLocation.getLocation(context).getPitch());
+        //@=-
+
+        //Log debug -=@
         if (mage.getDebugLevel() > 8)
         {
-            mage.sendDebugMessage(ChatColor.GREEN + "Rectangle Of Effect Targeting from " + ChatColor.GRAY + sourceLocation.getBlockX()
-                    + ChatColor.DARK_GRAY + ","  + ChatColor.GRAY + sourceLocation.getBlockY()
-                    + ChatColor.DARK_GRAY + "," + ChatColor.GRAY + sourceLocation.getBlockZ()
+            mage.sendDebugMessage(ChatColor.GREEN + "Rectangle Of Effect Targeting from " + ChatColor.GRAY + rectOrigin.getBlockX()
+                    + ChatColor.DARK_GRAY + ","  + ChatColor.GRAY + rectOrigin.getBlockY()
+                    + ChatColor.DARK_GRAY + "," + ChatColor.GRAY + rectOrigin.getBlockZ()
                     + ChatColor.DARK_GREEN + " with a volume of " + ChatColor.GREEN + volume + " blocks,"
                     + ChatColor.GRAY + " self? " + ChatColor.DARK_GRAY + context.getTargetsCaster(), 14
             );
@@ -97,11 +106,11 @@ public class RectOfEffectAction extends CompoundEntityAction
 
 
         //Calculate the 4 points of the rectangular space. -=@
-        double yaw = sourceLocation.getYaw();
+        double yaw = rectOrigin.getYaw();
         double yawRadians = Math.toRadians(yaw);
 
-        point1 = sourceLocation.clone().add(Math.cos(yawRadians) * -min.getX(), min.getY(), Math.sin(yawRadians) * -min.getX());
-        point2 = sourceLocation.clone().add(Math.cos(yawRadians) * -max.getX(), min.getY(), Math.sin(yawRadians) * -max.getX());
+        point1 = rectOrigin.clone().add(Math.cos(yawRadians) * -min.getX(), min.getY(), Math.sin(yawRadians) * -min.getX());
+        point2 = rectOrigin.clone().add(Math.cos(yawRadians) * -max.getX(), min.getY(), Math.sin(yawRadians) * -max.getX());
 
         double cos90 = -Math.cos(Math.toRadians(yaw - 90));
         double sin90 = -Math.sin(Math.toRadians(yaw - 90));
@@ -124,7 +133,7 @@ public class RectOfEffectAction extends CompoundEntityAction
 
         //Get all entities within reasonable range -=@
         double inclusionRadius = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-        Collection<Entity> candidates = CompatibilityLib.getCompatibilityUtils().getNearbyEntities(sourceLocation, inclusionRadius, deltaY, inclusionRadius);
+        Collection<Entity> candidates = CompatibilityLib.getCompatibilityUtils().getNearbyEntities(rectOrigin, inclusionRadius, deltaY, inclusionRadius);
         //@=-
 
         Entity targetEntity = context.getTargetEntity();
@@ -135,7 +144,7 @@ public class RectOfEffectAction extends CompoundEntityAction
                 for (Entity entity : candidates) {
                     boolean canTarget = entity != targetEntity || targetSource;
 
-                    if (!canTarget || !isTargetWithinRect(sourceLocation, min, max, entity))
+                    if (!canTarget || !isTargetWithinRect(rectOrigin, min, max, entity))
                     {
                         continue;
                     }
@@ -163,7 +172,7 @@ public class RectOfEffectAction extends CompoundEntityAction
                 boolean canTarget = true;
                 if (entity == targetEntity && !targetSource) continue;
 
-                if (!canTarget || !isTargetWithinRect(sourceLocation, min, max, entity))
+                if (!canTarget || !isTargetWithinRect(rectOrigin, min, max, entity))
                 {
                     continue;
                 }
@@ -174,8 +183,8 @@ public class RectOfEffectAction extends CompoundEntityAction
 
                 if (canTarget && context.canTarget(entity))
                 {
-                    double range = sourceLocation.distance(entity.getLocation());
-                    Target target = new Target(sourceLocation, entity, (int)range, 0);
+                    double range = rectOrigin.distance(entity.getLocation());
+                    Target target = new Target(rectOrigin, entity, (int)range, 0);
                     targets.add(target);
                     mage.sendDebugMessage(ChatColor.DARK_GREEN + "Target " + ChatColor.GREEN + entity.getType() + ChatColor.DARK_GREEN + ": " + ChatColor.YELLOW + target.getScore(), 12);
                 }
@@ -199,7 +208,7 @@ public class RectOfEffectAction extends CompoundEntityAction
                 boolean canTarget = true;
                 if (entity == targetEntity && !targetSource) continue;
 
-                if (!canTarget || !isTargetWithinRect(sourceLocation, min, max, entity))
+                if (!canTarget || !isTargetWithinRect(rectOrigin, min, max, entity))
                 {
                     continue;
                 }

@@ -3,6 +3,7 @@ package com.elmakers.mine.bukkit.action.builtin;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -22,6 +23,7 @@ public class OrientAction extends BaseSpellAction {
     private Float yawOffset;
     private boolean orientTarget;
     private boolean targetBlock;
+    private boolean faceTarget;
     private boolean noTargetBlock;
 
     @Override
@@ -48,6 +50,7 @@ public class OrientAction extends BaseSpellAction {
             yawOffset = null;
         }
         orientTarget = parameters.getBoolean("orient_target", false);
+        faceTarget = parameters.getBoolean("face_target", true);
         targetBlock = parameters.getBoolean("target_block", false);
         noTargetBlock = !parameters.getBoolean("target_block", true);
     }
@@ -56,12 +59,39 @@ public class OrientAction extends BaseSpellAction {
     public SpellResult perform(CastContext context) {
         Mage mage = context.getMage();
         Entity entity = orientTarget ? context.getTargetEntity() : mage.getEntity();
-        if (entity == null)
+        Entity targetEntity = orientTarget ? mage.getEntity() : context.getTargetEntity();
+
+        if (entity == null )
         {
             return orientTarget ? SpellResult.NO_TARGET : SpellResult.ENTITY_REQUIRED;
         }
 
         Location location = entity.getLocation();
+
+        if (faceTarget)
+        {
+            if (targetEntity == null) {
+                return SpellResult.ENTITY_REQUIRED;
+            }
+
+            Location targetLocation = null;
+            if (targetBlock) {
+                targetLocation = context.getTargetLocation();
+            } else if (targetEntity != null) {
+                targetLocation = targetEntity.getLocation();
+            } else if (!noTargetBlock) {
+                targetLocation = context.getTargetLocation();
+            }
+            if (targetLocation == null) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "say Orient failed because no target.");
+                return SpellResult.NO_TARGET;
+            }
+
+            Vector direction = targetLocation.toVector().subtract(location.toVector());
+            location.setDirection(direction);
+
+        }
+
         context.registerMoved(entity);
         if (pitch != null || yaw != null)
         {
@@ -81,26 +111,7 @@ public class OrientAction extends BaseSpellAction {
                 location.setYaw(location.getYaw() + yawOffset);
             }
         }
-        if (pitchOffset == null && yawOffset == null && yaw == null && pitch == null)
-        {
-            Entity targetEntity = orientTarget ? mage.getEntity() : context.getTargetEntity();
-            if (targetEntity == null && orientTarget) {
-                return SpellResult.ENTITY_REQUIRED;
-            }
-            Location targetLocation = null;
-            if (targetBlock) {
-                targetLocation = context.getTargetLocation();
-            } else if (targetEntity != null) {
-                targetLocation = targetEntity.getLocation();
-            } else if (!noTargetBlock) {
-                targetLocation = context.getTargetLocation();
-            }
-            if (targetLocation == null) {
-                return SpellResult.NO_TARGET;
-            }
-            Vector direction = targetLocation.toVector().subtract(location.toVector());
-            location.setDirection(direction);
-        }
+
         entity.teleport(location);
 
         return SpellResult.CAST;

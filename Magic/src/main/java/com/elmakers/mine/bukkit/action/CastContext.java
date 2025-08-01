@@ -1416,10 +1416,12 @@ public class CastContext extends WandContext implements com.elmakers.mine.bukkit
             case "spell": return getSpell().getName();
             case "wand": return wand == null ? null : wand.getName();
             case "world": return location == null ? null : location.getWorld().getName();
+            case "world_lower": return location == null ? null : location.getWorld().getName().toLowerCase();
             case "x": return location == null ? null : (integerValues ? Integer.toString(location.getBlockX()) : Double.toString(location.getX()));
             case "y": return location == null ? null : (integerValues ? Integer.toString(location.getBlockY()) : Double.toString(location.getY()));
             case "z": return location == null ? null : (integerValues ? Integer.toString(location.getBlockZ()) : Double.toString(location.getZ()));
             case "tworld": return targetLocation == null ? null : targetLocation.getWorld().getName();
+            case "tworld_lower": return targetLocation == null ? null : targetLocation.getWorld().getName().toLowerCase();
             case "tx": return targetLocation == null ? null : (integerValues ? Integer.toString(targetLocation.getBlockX()) : Double.toString(targetLocation.getX()));
             case "ty": return targetLocation == null ? null : (integerValues ? Integer.toString(targetLocation.getBlockY()) : Double.toString(targetLocation.getY()));
             case "tz": return targetLocation == null ? null : (integerValues ? Integer.toString(targetLocation.getBlockZ()) : Double.toString(targetLocation.getZ()));

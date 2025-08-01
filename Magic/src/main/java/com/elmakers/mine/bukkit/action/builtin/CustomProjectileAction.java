@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Queue;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -52,6 +53,8 @@ public class CustomProjectileAction extends CompoundAction
     private double speed;
     private VectorTransform velocityTransform;
     private double spread;
+    private double yawOffset;
+    private double pitchOffset;
     private double movementSpread;
     private double maxMovementSpread;
     private double startDistance;
@@ -258,6 +261,8 @@ public class CustomProjectileAction extends CompoundAction
         reflectLimit = parameters.getInt("reflect_count", -1);
         pitchMin = parameters.getInt("pitch_min", 90);
         pitchMax = parameters.getInt("pitch_max", -90);
+        yawOffset = parameters.getInt("yaw_offset", 0);
+        pitchOffset = parameters.getInt("pitch_offset", 0);
 
         reflectReorient = parameters.getBoolean("reflect_reorient", false);
         reflectResetDistanceTraveled = parameters.getBoolean("reflect_reset_distance_traveled", true);
@@ -422,6 +427,13 @@ public class CustomProjectileAction extends CompoundAction
                 projectileLocation.setPitch(pitchMax);
             }
             launchLocation = projectileLocation.clone();
+            if(yawOffset != 0) {
+                projectileLocation.setYaw((float) (projectileLocation.getYaw() + yawOffset));
+            }
+            if(pitchOffset != 0) {
+                projectileLocation.setPitch((float) (projectileLocation.getPitch() + pitchOffset));
+            }
+
             velocity = projectileLocation.getDirection().clone().normalize();
 
             if (spread > 0) {
@@ -829,6 +841,7 @@ public class CustomProjectileAction extends CompoundAction
         if (!continueProjectile) {
             blockHitCount++;
         }
+
         return continueProjectile ? SpellResult.PENDING : (hitRequiresEntity ? miss() : hit());
     }
 
@@ -908,6 +921,7 @@ public class CustomProjectileAction extends CompoundAction
     }
 
     protected SpellResult hit() {
+
         if (attachDuration > 0) {
             return attach();
         }
@@ -921,10 +935,12 @@ public class CustomProjectileAction extends CompoundAction
         } else if (targetSelf != null) {
             actionContext.setTargetsCaster(targetSelf);
         }
+
         return startActions();
     }
 
     protected SpellResult miss() {
+
         missed = true;
         if (hitOnMiss) {
             return hit();

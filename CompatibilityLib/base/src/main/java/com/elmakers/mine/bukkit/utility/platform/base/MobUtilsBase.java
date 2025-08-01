@@ -64,4 +64,20 @@ public class MobUtilsBase implements MobUtils {
     public boolean setPathfinderTarget(Entity entity, Entity target, double speed) {
         return false;
     }
+
+    @Override
+    public boolean disableArmorDrops(Entity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean disableHandDrops(Entity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean setLootTable(Entity entity, String lootTable) {
+        return false;
+    }
+
 }

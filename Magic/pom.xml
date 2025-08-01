@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.elmakers.mine.bukkit</groupId>
             <artifactId>EffectLib</artifactId>
-            <version>10.5</version>
+            <version>10.4</version>
             <scope>compile</scope>
         </dependency>
 
@@ -271,8 +271,9 @@
         </dependency>
         <dependency>
             <groupId>net.citizensnpcs</groupId>
-            <artifactId>citizens</artifactId>
-            <version>2.0.16-SNAPSHOT</version>
+            <artifactId>citizens-main</artifactId>
+            <version>2.0.35-SNAPSHOT</version>
+            <type>jar</type>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -479,10 +480,11 @@
             <version>v2.0.5</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.Maxlego08/zAuctionHouseV3-API -->
         <dependency>
             <groupId>com.github.Maxlego08</groupId>
             <artifactId>zAuctionHouseV3-API</artifactId>
-            <version>4.0.4.9</version>
+            <version>3.2.1.9</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -548,7 +550,7 @@
         </repository>
 		<repository>
 		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
+		    <url>https://jitpack.io/</url>
 		</repository>
         <repository>
             <id>nexus</id>

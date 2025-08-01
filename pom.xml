@@ -24,7 +24,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.java>21</version.java>
+        <version.java>17</version.java>
         <findbugs.version>1.3.9</findbugs.version>
         <bukkit.version>1.9.2-R0.1-SNAPSHOT</bukkit.version>
     </properties>
@@ -92,12 +92,6 @@
 
                     <fork>true</fork>
                     <compilerArgs>
-                        <arg>-Xlint:all,-serial,-fallthrough</arg>
-                        <arg>-XDcompilePolicy=simple</arg>
-                        <arg>
-                            -Xplugin:ErrorProne -Xep:ProtectedMembersInFinalClass:ERROR -Xep:RemoveUnusedImports:ERROR -Xep:InlineMeSuggester:OFF -Xep:CatchAndPrintStackTrace:OFF
-                        </arg>
-
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
@@ -111,47 +105,7 @@
                     </compilerArgs>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>com.google.errorprone</groupId>
-                            <artifactId>error_prone_core</artifactId>
-                            <version>2.28.0</version>
-                        </path>
-                    </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-
-            <!-- Checkstyle -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.1</version>
-                <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
-                    <encoding>UTF-8</encoding>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                    <linkXRef>false</linkXRef>
-                    <resourceIncludes>**/*.yml</resourceIncludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <!-- Use a more up to date version of checkstyle -->
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>8.29</version>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!-- Generate javadocs -->

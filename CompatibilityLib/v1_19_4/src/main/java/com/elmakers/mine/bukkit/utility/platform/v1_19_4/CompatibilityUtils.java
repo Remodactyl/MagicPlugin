@@ -27,9 +27,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Rotation;
 import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -67,6 +69,7 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
@@ -116,6 +119,8 @@ import com.google.common.collect.Multimap;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -129,7 +134,9 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -677,6 +684,16 @@ public class CompatibilityUtils extends ModernCompatibilityUtils {
     @Override
     public void setGravity(Entity entity, boolean gravity) {
         entity.setGravity(gravity);
+    }
+
+    @Override
+    public void setGlowing(Entity entity, boolean glowing) {
+        if (!(entity instanceof ItemDisplay)) {
+            return;
+        }
+
+        ItemDisplay itemDisplay = (ItemDisplay) entity;
+        itemDisplay.setGlowing(glowing);
     }
 
     @Override
@@ -1249,6 +1266,12 @@ public class CompatibilityUtils extends ModernCompatibilityUtils {
     }
 
     @Override
+    public boolean stopSound(Player player) {
+        player.stopSound(SoundCategory.MASTER);
+        return true;
+    }
+
+    @Override
     public boolean stopSound(Player player, String sound) {
         player.stopSound(sound);
         return true;
@@ -1803,5 +1826,38 @@ public class CompatibilityUtils extends ModernCompatibilityUtils {
     @Nullable
     public BlockPopulator createOutOfBoundsPopulator(Logger logger) {
         return new OutOfBoundsEntityCleanup(logger);
+    }
+
+    @Override
+    public String getBiomeKey(String biomeName) {
+        String biomeKey;
+        Biome bukkitBiome = null;
+        try {
+            bukkitBiome = Biome.valueOf(biomeName.trim().toUpperCase());
+        } catch (Exception ignore) {
+
+        }
+
+        if (bukkitBiome != null) {
+            biomeKey = bukkitBiome.getKey().getNamespace() + ":" + bukkitBiome.getKey().getKey();
+            return biomeKey;
+        }
+
+        Server server = Bukkit.getServer();
+        CraftServer craftServer = (CraftServer) server;
+        DedicatedServer dedicatedServer = craftServer.getServer();
+        MappedRegistry<net.minecraft.world.level.biome.Biome> biomes = (MappedRegistry<net.minecraft.world.level.biome.Biome>) dedicatedServer.registryAccess().registryOrThrow(Registries.BIOME);
+
+        if (!biomeName.contains(":")) {
+            biomeName = "minecraft:" + biomeName;
+        }
+
+        ResourceLocation biomeResource = ResourceLocation.tryParse(biomeName);
+        if (biomes.containsKey(biomeResource)) {
+            return biomeName;
+        }
+
+        Bukkit.getLogger().info("Failed to parse biome " + biomeName + " fully. Neither datapack, nor bukkit provided meaningful biome definition.");
+        return "";
     }
 }

@@ -2341,6 +2341,9 @@ public class Mage implements CostReducer, com.elmakers.mine.bukkit.api.magic.Mag
                     if (fromDeactivate && !spell.cancelOnDeactivate()) {
                         continue;
                     }
+                    if(spell.bypassesDeactivate()) {
+                        continue;
+                    }
                     if (!force && !spell.isCancellable()) {
                         continue;
                     }
@@ -2368,7 +2371,9 @@ public class Mage implements CostReducer, com.elmakers.mine.bukkit.api.magic.Mag
         if (nonBatched && stoppedPending == null && spellKey != null && !spellKey.isEmpty()) {
             Spell cancelSpell = getSpell(spellKey);
             if (cancelSpell != null) {
-                cancelSpell.cancel();
+                if(!cancelSpell.bypassesDeactivate()) {
+                    cancelSpell.cancel();
+                }
             }
         }
         return stoppedPending;

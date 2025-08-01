@@ -45,12 +45,14 @@ import com.elmakers.mine.bukkit.utility.StringUtils;
  * <li><code>@p</code> - mage name
  * <li><code>@uuid</code> - mage uuid
  * <li><code>@world, @x, @y, @z</code> - mage location
+ * <li><code>@world_lower</code> - mage world lowercase
  *
  * <p>If targeting is used ("target: none" to disable), the following will also be escaped:
  *
  * <li><code>@t</code> - target mage name
  * <li><code>@tuuid</code> - target entity uuid
  * <li><code>@tworld, @tx, @ty, @tz</code> - target location
+ * <li><code>@tworld_lower</code> - target world lowercase
  *
  * <p>If <code>@arg</code> is present in the command string a conversation will be created with the player to gather the input.
  */
@@ -150,6 +152,7 @@ public class CommandAction extends BaseSpellAction {
                 if (converted.contains("@arg")) {
                     conversationCommands.add(converted);
                 } else {
+                    Bukkit.getLogger().info("Running command through sender '" + sender.getName() + "': " + converted);
                     controller.getPlugin().getServer().dispatchCommand(sender, converted);
                 }
             } catch (Exception ex) {
@@ -267,6 +270,7 @@ public class CommandAction extends BaseSpellAction {
             if (!isOp && opPlayer) {
                 sender.setOp(true);
             }
+
             context.getController().getPlugin().getServer().dispatchCommand(sender, command);
         }
     }

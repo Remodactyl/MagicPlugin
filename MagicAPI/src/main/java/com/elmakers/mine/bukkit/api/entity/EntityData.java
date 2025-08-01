@@ -45,6 +45,7 @@ public interface EntityData extends Cloneable {
     @Deprecated
     ItemStack getItem();
     double getHealth();
+    double getMinHealth();
     void setHasMoved(boolean hasMoved);
     void setDamaged(boolean damaged);
     boolean isDocile();

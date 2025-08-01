@@ -98,6 +98,7 @@ public class EntityData
     protected String name = null;
 
     protected Double maxHealth;
+    protected Double minHealth = 0.0;
     protected Double health;
     protected Integer airLevel;
     protected Boolean isBaby;
@@ -116,6 +117,8 @@ public class EntityData
     protected boolean ownable = false;
     protected boolean isStatic = false;
     protected boolean preventProjectiles;
+    protected boolean dropArmorItems = true;
+    protected boolean dropHandItems = true;
     protected boolean preventMelee;
     protected Boolean nameVisible;
     protected boolean isNPC;
@@ -182,6 +185,7 @@ public class EntityData
     protected EntityMageData mageData;
     protected EntityData mount;
     protected String mountType;
+    protected String lootTable = "";
 
     protected ConfigurationSection configuration;
 
@@ -329,6 +333,7 @@ public class EntityData
         mythicMobKey = parameters.getString("mythic_mob");
         mythicMobLevel = ConfigUtils.getOptionalDouble(parameters, "mythic_mob_level");
         health = ConfigUtils.getOptionalDouble(parameters, "health");
+        minHealth = ConfigUtils.getOptionalDouble(parameters, "min_health");
         maxHealth = ConfigUtils.getOptionalDouble(parameters, "max_health");
         // Shortcut for max_health
         if (health != null && maxHealth == null) maxHealth = health;
@@ -505,6 +510,7 @@ public class EntityData
         interval = parameters.getInt("interval", 1000);
 
         loot = parameters.getConfigurationSection("loot");
+        lootTable = parameters.getString("lootTable", "");
         cancelInteract = parameters.getBoolean("cancel_interact");
         List<String> tagList = ConfigurationUtils.getStringList(parameters, "tags");
         if (tagList != null) {
@@ -563,6 +569,8 @@ public class EntityData
         chestplate = controller.getOrCreateItem(parameters.getString("chestplate"));
         leggings = controller.getOrCreateItem(parameters.getString("leggings"));
         boots = controller.getOrCreateItem(parameters.getString("boots"));
+        dropArmorItems = parameters.getBoolean("drop_armor_items", true);
+        dropHandItems = parameters.getBoolean("drop_hand_items", true);
 
         EntityMageData mageData = new EntityMageData(controller, parameters);
         if (!mageData.isEmpty()) {
@@ -663,6 +671,11 @@ public class EntityData
     @Override
     public double getHealth() {
         return health == null ? 0 : health;
+    }
+
+    @Override
+    public double getMinHealth() {
+        return minHealth == null ? 0 : minHealth;
     }
 
     @Nullable
@@ -968,6 +981,10 @@ public class EntityData
                 if (hasAI != null) {
                     li.setAI(hasAI);
                 }
+                if(!lootTable.isEmpty()) {
+                    MobUtils mobUtils = CompatibilityLib.getMobUtils();
+                    mobUtils.setLootTable(entity, lootTable);
+                }
             } catch (Throwable ex) {
                 ex.printStackTrace();
             }
@@ -1219,6 +1236,7 @@ public class EntityData
 
     public void copyEquipmentTo(LivingEntity entity) {
         EntityEquipment equipment = entity.getEquipment();
+
         if (equipment == null) return;
         if (itemInHand != null) {
             itemInHand.getItemStack(1, itemStack -> equipment.setItemInMainHand(itemStack));
@@ -1237,6 +1255,16 @@ public class EntityData
         }
         if (boots != null) {
             boots.getItemStack(1, itemStack -> equipment.setBoots(itemStack));
+        }
+
+        if(!dropArmorItems) {
+            MobUtils mobUtils = CompatibilityLib.getMobUtils();
+            mobUtils.disableArmorDrops(entity);
+        }
+
+        if(!dropHandItems) {
+            MobUtils mobUtils = CompatibilityLib.getMobUtils();
+            mobUtils.disableHandDrops(entity);
         }
     }
 

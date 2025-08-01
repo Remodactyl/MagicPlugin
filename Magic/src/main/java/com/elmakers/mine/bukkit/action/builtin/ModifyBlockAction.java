@@ -36,6 +36,8 @@ public class ModifyBlockAction extends BaseSpellAction {
     private double breakable = 0;
     private double backfireChance = 0;
     private boolean applyPhysics = false;
+    private boolean exactLocation = false;
+    private int x, y, z;
     private boolean commit = false;
     private boolean consumeBlocks = false;
     private boolean consumeVariants = true;
@@ -58,6 +60,14 @@ public class ModifyBlockAction extends BaseSpellAction {
         consumeVariants = parameters.getBoolean("consume_variants", true);
         fallingBlocksHurt = parameters.getBoolean("falling_hurts", false);
         checkChunk = parameters.getBoolean("check_chunk", true);
+
+        if(parameters.contains("x")) {
+            x = parameters.getInt("x");
+            y = parameters.getInt("y");
+            z = parameters.getInt("z");
+            exactLocation = true;
+        }
+
         replaceSame = parameters.getBoolean("replace_same", false);
         fallingBlockDirection = null;
         if (spawnFallingBlocks && parameters.contains("direction") && !parameters.getString("direction").isEmpty())
@@ -87,6 +97,11 @@ public class ModifyBlockAction extends BaseSpellAction {
         }
 
         Block block = context.getTargetBlock();
+        if(exactLocation) {
+            Location newBlockLocation = new Location(block.getWorld(), x, y, z);
+            block = newBlockLocation.getBlock();
+        }
+
         if (brush.isErase()) {
             if (!context.hasBreakPermission(block)) {
                 return SpellResult.INSUFFICIENT_PERMISSION;

@@ -206,6 +206,7 @@ public class CustomTrigger extends Trigger {
                 command = command
                     .replace("@name", mage.getName())
                     .replace("@world", location.getWorld().getName())
+                        .replace("@world_lower", location.getWorld().getName().toLowerCase())
                     .replace("@x", Double.toString(location.getX()))
                     .replace("@y", Double.toString(location.getY()))
                     .replace("@z", Double.toString(location.getZ()));

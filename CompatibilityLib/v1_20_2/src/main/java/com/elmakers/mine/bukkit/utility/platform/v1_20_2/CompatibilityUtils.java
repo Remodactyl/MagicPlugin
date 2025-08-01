@@ -28,6 +28,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Rotation;
 import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -1254,6 +1255,12 @@ public class CompatibilityUtils extends ModernCompatibilityUtils {
     @Override
     public boolean stopSound(Player player, Sound sound) {
         player.stopSound(sound);
+        return true;
+    }
+
+    @Override
+    public boolean stopSound(Player player) {
+        player.stopSound(SoundCategory.MASTER);
         return true;
     }
 

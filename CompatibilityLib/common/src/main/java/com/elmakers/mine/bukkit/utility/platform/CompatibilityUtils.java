@@ -203,6 +203,7 @@ public interface CompatibilityUtils {
     void setGravity(ArmorStand armorStand, boolean gravity);
 
     void setGravity(Entity entity, boolean gravity);
+    void setGlowing(Entity entity, boolean glowing);
 
     void setDisabledSlots(ArmorStand armorStand, int disabledSlots);
 
@@ -411,6 +412,7 @@ public interface CompatibilityUtils {
     Entity getSource(Entity entity);
 
     boolean stopSound(Player player, Sound sound);
+    boolean stopSound(Player player);
 
     boolean stopSound(Player player, String sound);
 
@@ -563,4 +565,6 @@ public interface CompatibilityUtils {
     Enchantment getPowerEnchantment();
 
     PotionEffectType getJumpPotionEffectType();
+
+    String getBiomeKey(String biomeName);
 }

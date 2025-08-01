@@ -536,6 +536,15 @@ public class Targeting {
             }
 
             entities = CompatibilityLib.getCompatibilityUtils().getNearbyEntities(sourceLocation, queryRange.getX() / 2, queryRange.getY() / 2, queryRange.getZ() / 2);
+
+            if (targetType == TargetType.DISPLAY_ENTITY)
+            {
+                Collection<Entity> filteredEntities = entities;
+                for (Entity entity : entities)
+                {
+                }
+            }
+
             if (mage.getDebugLevel() > 16) {
                 mage.sendDebugMessage(ChatColor.GREEN + "Targeting " + ChatColor.GOLD + entities.size() + ChatColor.GREEN + " entities from "
                         + ChatColor.GRAY + source.getBlockX()

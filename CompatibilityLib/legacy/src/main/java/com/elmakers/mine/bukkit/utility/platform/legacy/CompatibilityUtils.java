@@ -967,6 +967,11 @@ public class CompatibilityUtils extends CompatibilityUtilsBase {
     }
 
     @Override
+    public void setGlowing(Entity entity, boolean glowing) {
+
+    }
+
+    @Override
     public void setDisabledSlots(ArmorStand armorStand, int disabledSlots) {
         if (NMSUtils.class_EntityArmorStand_disabledSlotsField == null) return;
         try {
@@ -2171,6 +2176,11 @@ public class CompatibilityUtils extends CompatibilityUtilsBase {
         } catch (Throwable ex) {
             ex.printStackTrace();
         }
+        return false;
+    }
+
+    @Override
+    public boolean stopSound(Player player) {
         return false;
     }
 

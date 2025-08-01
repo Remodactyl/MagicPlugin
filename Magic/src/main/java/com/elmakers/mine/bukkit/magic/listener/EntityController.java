@@ -9,17 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -237,6 +232,26 @@ public class EntityController implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onEntityDamageEvent(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Projectile || entity instanceof TNTPrimed) return;
+
+        EntityData entityData = controller.getMob(entity);
+        LivingEntity livingEntity = (LivingEntity) entity;
+        if(entityData != null && livingEntity != null) {
+            double minHealth = entityData.getMinHealth();
+            if(minHealth > 0) {
+                double currentHealth = livingEntity.getHealth();
+                double damage = event.getDamage();
+
+                if(currentHealth - damage < minHealth) {
+                    double maxDamage = currentHealth - minHealth;
+                    event.setDamage(maxDamage);
+                }
+            }
+        }
+    }
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityPreDamageByEntity(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof Projectile || entity instanceof TNTPrimed) return;
@@ -282,6 +297,7 @@ public class EntityController implements Listener {
                 event.setDamage(event.getDamage() * (1 - reduction));
             }
         }
+
         if (damager instanceof Player) {
             Mage damagerMage = controller.getRegisteredMage(damager);
             com.elmakers.mine.bukkit.api.wand.Wand activeWand = damagerMage == null ? null : damagerMage.getActiveWand();

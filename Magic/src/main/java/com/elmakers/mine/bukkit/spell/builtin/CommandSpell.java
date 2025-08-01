@@ -94,6 +94,7 @@ public class CommandSpell extends TargetingSpell {
                     .replace("@pd", mage.getDisplayName())
                     .replace("@p", mage.getName())
                     .replace("@uuid", mage.getId())
+                    .replace("@world_lower", location.getWorld().getName().toLowerCase())
                     .replace("@world", location.getWorld().getName())
                     .replace("@x", Double.toString(location.getX()))
                     .replace("@y", Double.toString(location.getY()))
@@ -101,6 +102,7 @@ public class CommandSpell extends TargetingSpell {
 
             if (targetLocation != null) {
                 command = command
+                        .replace("@tworld_lower", targetLocation.getWorld().getName().toLowerCase())
                         .replace("@tworld", targetLocation.getWorld().getName())
                         .replace("@tx", Double.toString(targetLocation.getX()))
                         .replace("@ty", Double.toString(targetLocation.getY()))

@@ -36,6 +36,8 @@ public class ModifyEntityAction extends BaseSpellAction
 
     private boolean noDrops = false;
     private boolean force = false;
+    private boolean glowing = false;
+    private boolean modifyGlowing = false;
     private boolean tamed = false;
     private boolean setOwner = false;
 
@@ -51,6 +53,12 @@ public class ModifyEntityAction extends BaseSpellAction
         noDrops = parameters.getBoolean("no_drops", false);
         force = parameters.getBoolean("force", false);
         tamed = parameters.getBoolean("tamed", false);
+
+        if (parameters.contains("glowing")) {
+            modifyGlowing = true;
+            glowing = parameters.getBoolean("glowing", false);
+        }
+
         speed = parameters.getDouble("speed", 0);
         direction = ConfigurationUtils.getVector(parameters, "direction");
         dyOffset = parameters.getDouble("dy_offset", 0);
@@ -123,6 +131,9 @@ public class ModifyEntityAction extends BaseSpellAction
         }
         if (setOwner) {
             CompatibilityLib.getCompatibilityUtils().setOwner(entity, context.getMage().getEntity());
+        }
+        if (modifyGlowing) {
+            CompatibilityLib.getCompatibilityUtils().setGlowing(entity, glowing);
         }
         LivingEntity shooter = context.getLivingEntity();
         if (shooter != null) {

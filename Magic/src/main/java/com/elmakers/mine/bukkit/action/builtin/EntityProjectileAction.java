@@ -3,6 +3,7 @@ package com.elmakers.mine.bukkit.action.builtin;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -40,6 +41,7 @@ public class EntityProjectileAction extends CustomProjectileAction {
 
     private EntityData entityData;
     protected String variantName;
+    public boolean hitOnEntityBreak = true;
 
     protected Entity entity = null;
     protected Plugin plugin = null;
@@ -72,6 +74,7 @@ public class EntityProjectileAction extends CustomProjectileAction {
         locationOffset = ConfigurationUtils.getVector(parameters, "location_offset");
         relativeLocationOffset = ConfigurationUtils.getVector(parameters, "relative_location_offset");
         allowReplacement = parameters.getBoolean("allow_replacement", true);
+        hitOnEntityBreak = parameters.getBoolean("hit_on_entity_break", true);
 
         if (parameters.contains("spawn_reason")) {
             String reasonText = parameters.getString("spawn_reason").toUpperCase();
@@ -178,7 +181,11 @@ public class EntityProjectileAction extends CustomProjectileAction {
 
         SpellResult result = super.step(context);
         if (entity == null) {
-            return SpellResult.CAST;
+            if(hitOnEntityBreak) {
+                return SpellResult.CAST;
+            } else {
+                return result;
+            }
         }
 
         Location target = adjustLocation(actionContext.getTargetLocation());

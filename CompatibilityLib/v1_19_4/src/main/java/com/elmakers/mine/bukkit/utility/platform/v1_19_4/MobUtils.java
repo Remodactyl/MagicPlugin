@@ -13,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.EntityEquipment;
 
 import com.elmakers.mine.bukkit.api.magic.Mage;
 import com.elmakers.mine.bukkit.api.magic.MageController;
@@ -35,6 +36,7 @@ import com.elmakers.mine.bukkit.utility.platform.v1_19_4.goal.RequirementsGoal;
 import com.elmakers.mine.bukkit.utility.platform.v1_19_4.goal.SpinGoal;
 import com.elmakers.mine.bukkit.utility.platform.v1_19_4.goal.TriggerGoal;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.GlowSquid;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -864,6 +866,61 @@ public class MobUtils extends MobUtilsBase {
 
         Mob mob = (Mob)nmsEntity;
         mob.getNavigation().moveTo(nmstarget, speed);
+        return true;
+    }
+
+
+    @Override
+    public boolean disableArmorDrops(Entity entity) {
+        org.bukkit.entity.LivingEntity livingEntity = (org.bukkit.entity.LivingEntity) entity;
+        if (livingEntity == null) {
+            return false;
+        }
+
+        EntityEquipment equipment = livingEntity.getEquipment();
+        if (equipment == null) {
+            return false;
+        }
+
+        equipment.setBootsDropChance(0);
+        equipment.setLeggingsDropChance(0);
+        equipment.setChestplateDropChance(0);
+        equipment.setHelmetDropChance(0);
+        return true;
+    }
+
+    @Override
+    public boolean disableHandDrops(Entity entity) {
+        org.bukkit.entity.LivingEntity livingEntity = (org.bukkit.entity.LivingEntity) entity;
+        if (livingEntity == null) {
+            return false;
+        }
+
+        EntityEquipment equipment = livingEntity.getEquipment();
+        if (equipment == null) {
+            return false;
+        }
+
+        equipment.setItemInMainHandDropChance(0);
+        equipment.setItemInOffHandDropChance(0);
+        return true;
+    }
+
+    @Override
+    public boolean setLootTable(Entity entity, String lootTable) {
+        if (entity == null) {
+            return false;
+        }
+
+        CraftEntity craftEntity = (CraftEntity)entity;
+        net.minecraft.world.entity.Entity nmsEntity = craftEntity.getHandle();
+        Mob mob = (Mob)nmsEntity;
+        if (mob == null) {
+            return false;
+        }
+
+        String[] resourceStrings = lootTable.split(":");
+        mob.lootTable = new ResourceLocation(resourceStrings[0], resourceStrings[1]);
         return true;
     }
 }

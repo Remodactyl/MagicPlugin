@@ -30,4 +30,8 @@ public interface MobUtils {
     boolean addTargetGoal(Entity entity, GoalConfiguration goal);
 
     boolean setPathfinderTarget(Entity entity, Entity target, double speed);
+    boolean disableArmorDrops(Entity entity);
+    boolean disableHandDrops(Entity entity);
+
+    boolean setLootTable(Entity entity, String lootTable);
 }

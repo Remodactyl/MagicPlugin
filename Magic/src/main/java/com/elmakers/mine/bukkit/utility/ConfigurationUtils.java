@@ -664,6 +664,8 @@ public class ConfigurationUtils extends ConfigUtils {
         Set<Biome> set = new HashSet<>();
         for (String biomeName : biomeNames) {
             try {
+                String biomeResourceName = CompatibilityLib.getCompatibilityUtils().getBiomeKey(biomeName);
+
                 Biome biome = Biome.valueOf(biomeName.trim().toUpperCase());
                 set.add(biome);
             } catch (Exception ignore) {

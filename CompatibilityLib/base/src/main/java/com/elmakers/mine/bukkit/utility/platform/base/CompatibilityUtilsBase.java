@@ -1171,4 +1171,10 @@ public abstract class CompatibilityUtilsBase implements CompatibilityUtils {
     public PotionEffectType getJumpPotionEffectType() {
         return PotionEffectType.JUMP;
     }
+
+    @Override
+    public String getBiomeKey(String biomeName) {
+        return "";
+    }
+
 }

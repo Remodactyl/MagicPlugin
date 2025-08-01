@@ -8,6 +8,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
+import com.elmakers.mine.bukkit.utility.CompatibilityLib;
+import com.elmakers.mine.bukkit.utility.platform.EntityUtils;
+import com.elmakers.mine.bukkit.utility.platform.MobUtils;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -71,7 +74,7 @@ public class EffectLibManager {
 
     public void setForceShow(boolean forceShow) {
         if (effectManager != null) {
-            effectManager.setForceShow(forceShow);
+            //effectManager.setForceShow(forceShow);
         }
     }
 
@@ -136,7 +139,9 @@ public class EffectLibManager {
         if (targetEntity != null && targetEntity instanceof Player) {
             parameterMap.set("$target", targetEntity.getName());
         } else if (targetEntity != null) {
-            parameterMap.set("$target", targetEntity.getCustomName());
+            EntityUtils entityUtils = CompatibilityLib.getEntityUtils();
+            String customName = entityUtils.getCustomName(targetEntity);
+            parameterMap.set("$target", customName);
         } else {
             parameterMap.set("$target", "Unknown");
         }

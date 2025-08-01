@@ -33,7 +33,7 @@ public class DeactivateAction extends BaseSpellAction
             return SpellResult.NO_TARGET;
         }
 
-        targetMage.deactivateAllSpells(true, false, deactivateSelf ? null : context.getSpell().getSpellKey().getBaseKey());
+        targetMage.deactivateAllSpells(false, false, deactivateSelf ? null : context.getSpell().getSpellKey().getBaseKey());
         return SpellResult.CAST;
     }
 

@@ -5315,6 +5315,8 @@ public class MagicController implements MageController, ChunkLoadListener {
 
                 MaterialAndData material = new MaterialAndData(itemStack);
                 return material.getName(getMessages());
+            } else {
+                return CompatibilityLib.getEntityUtils().getCustomName(target);
             }
         }
 

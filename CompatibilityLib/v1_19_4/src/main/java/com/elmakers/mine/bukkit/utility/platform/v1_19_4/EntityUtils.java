@@ -1,8 +1,10 @@
 package com.elmakers.mine.bukkit.utility.platform.v1_19_4;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemDisplay;
 
 import com.elmakers.mine.bukkit.api.magic.MageController;
 import com.elmakers.mine.bukkit.entity.EntityExtraData;
@@ -42,5 +44,17 @@ public class EntityUtils extends com.elmakers.mine.bukkit.utility.platform.v1_16
             default:
                 return super.getExtraData(controller, type, parameters);
         }
+    }
+
+    @Override
+    public String getCustomName(Entity entity) {
+
+        if (entity instanceof ItemDisplay) {
+            ItemDisplay itemDisplay = (ItemDisplay) entity;
+            Bukkit.getLogger().info("RETRIEVING ITEM DISPLAY NAME: " + itemDisplay.getCustomName());
+            return itemDisplay.getCustomName();
+        }
+
+        return entity.getCustomName();
     }
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 
@@ -28,6 +29,7 @@ public class ApplyCooldownAction extends BaseSpellAction
     private Set<String> excludeSpells;
     private boolean clear;
     private boolean bypassReduction;
+    private boolean additive;
     private boolean targetCaster;
 
     @Override
@@ -41,6 +43,7 @@ public class ApplyCooldownAction extends BaseSpellAction
         clear = parameters.getBoolean("clear", false);
         bypassReduction = parameters.getBoolean("bypass_reduction", false);
         targetCaster = parameters.getBoolean("target_caster", false);
+        additive = parameters.getBoolean("additive", false);
         if (parameters.contains("spells")) {
             spells = ConfigurationUtils.getStringList(parameters, "spells");
         }
@@ -103,6 +106,9 @@ public class ApplyCooldownAction extends BaseSpellAction
                 if (spell != null) {
                     if (clear) {
                         spell.clearCooldown();
+                    } else if(additive) {
+                        long currentCooldown = spell.getRemainingCooldown();
+                        spell.setRemainingCooldown(amount + currentCooldown);
                     } else if (amount > 0) {
                         spell.setRemainingCooldown(amount);
                     } else {

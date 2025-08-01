@@ -19,4 +19,6 @@ public interface EntityUtils {
     EntityExtraData getPaintingData(Art art, BlockFace direction);
 
     EntityExtraData getItemFrameData(ItemStack item, BlockFace direction, Rotation rotation);
+
+    String getCustomName(Entity entity);
 }

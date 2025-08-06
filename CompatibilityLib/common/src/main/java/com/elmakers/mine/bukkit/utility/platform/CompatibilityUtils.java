@@ -567,4 +567,5 @@ public interface CompatibilityUtils {
     PotionEffectType getJumpPotionEffectType();
 
     String getBiomeKey(String biomeName);
+    String getBlockBiome(Block block);
 }

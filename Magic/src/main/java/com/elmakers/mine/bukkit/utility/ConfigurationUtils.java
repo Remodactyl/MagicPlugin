@@ -659,15 +659,13 @@ public class ConfigurationUtils extends ConfigUtils {
     }
 
     @Nullable
-    public static Set<Biome> loadBiomes(List<String> biomeNames, Logger logger, String logContext) {
+    public static Set<String> loadBiomes(List<String> biomeNames, Logger logger, String logContext) {
         if (biomeNames == null || biomeNames.isEmpty()) return null;
-        Set<Biome> set = new HashSet<>();
+        Set<String> set = new HashSet<>();
         for (String biomeName : biomeNames) {
             try {
                 String biomeResourceName = CompatibilityLib.getCompatibilityUtils().getBiomeKey(biomeName);
-
-                Biome biome = Biome.valueOf(biomeName.trim().toUpperCase());
-                set.add(biome);
+                set.add(biomeResourceName);
             } catch (Exception ignore) {
             }
         }

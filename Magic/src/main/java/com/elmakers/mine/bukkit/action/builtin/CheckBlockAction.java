@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.elmakers.mine.bukkit.utility.CompatibilityLib;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -29,8 +30,8 @@ public class CheckBlockAction extends CheckAction {
     private boolean allowBrush;
     private boolean notBrush;
     private SourceLocation sourceLocation;
-    private Set<Biome> allowedBiomes;
-    private Set<Biome> notBiomes;
+    private Set<String> allowedBiomes;
+    private Set<String> notBiomes;
     private Map<Biome, String> biomeActions;
     private Map<Material, String> blockActions;
     private boolean checkPermissions;
@@ -174,7 +175,7 @@ public class CheckBlockAction extends CheckAction {
                 isAllowed = false;
             }
         }
-        if (isAllowed && allowedBiomes != null && !allowedBiomes.contains(block.getBiome())) {
+        if (isAllowed && allowedBiomes != null && !allowedBiomes.contains(CompatibilityLib.getCompatibilityUtils().getBlockBiome(block))) {
             isAllowed = false;
         }
 
@@ -184,7 +185,7 @@ public class CheckBlockAction extends CheckAction {
         }
 
         // Negative tests override all
-        if (isAllowed && notBiomes != null && notBiomes.contains(block.getBiome())) {
+        if (isAllowed && notBiomes != null && notBiomes.contains(CompatibilityLib.getCompatibilityUtils().getBlockBiome(block))) {
             isAllowed = false;
         }
         if (isAllowed && notBrush && brush != null && !brush.isDifferent(block)) {

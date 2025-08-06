@@ -119,6 +119,7 @@ import com.google.common.collect.Multimap;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -1848,6 +1849,7 @@ public class CompatibilityUtils extends ModernCompatibilityUtils {
         DedicatedServer dedicatedServer = craftServer.getServer();
         MappedRegistry<net.minecraft.world.level.biome.Biome> biomes = (MappedRegistry<net.minecraft.world.level.biome.Biome>) dedicatedServer.registryAccess().registryOrThrow(Registries.BIOME);
 
+
         if (!biomeName.contains(":")) {
             biomeName = "minecraft:" + biomeName;
         }
@@ -1859,5 +1861,19 @@ public class CompatibilityUtils extends ModernCompatibilityUtils {
 
         Bukkit.getLogger().info("Failed to parse biome " + biomeName + " fully. Neither datapack, nor bukkit provided meaningful biome definition.");
         return "";
+    }
+
+    @Override
+    public String getBlockBiome(Block block) {
+
+        CraftWorld craftWorld = (CraftWorld) block.getWorld();
+        ServerLevel nmsWorld = craftWorld.getHandle();
+
+        Holder<net.minecraft.world.level.biome.Biome> biomeHolder = nmsWorld.getBiome(new BlockPos(block.getX(), block.getY(), block.getZ()));
+        ResourceKey<net.minecraft.world.level.biome.Biome> resourceKey = biomeHolder.unwrapKey().get();
+
+        String name = resourceKey.location().getNamespace() + ":" + resourceKey.location().getPath();
+
+        return name;
     }
 }

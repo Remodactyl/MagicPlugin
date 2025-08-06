@@ -21,8 +21,8 @@ public abstract class BaseBlockPopulator extends MagicChunkPopulator {
     private Integer maxAirY = null;
     private int cooldown;
     private long lastPopulate;
-    private Set<Biome> biomes;
-    private Set<Biome> notBiomes;
+    private Set<String> biomes;
+    private Set<String> notBiomes;
 
     @Override
     public boolean load(ConfigurationSection config, MagicController controller) {
@@ -49,9 +49,9 @@ public abstract class BaseBlockPopulator extends MagicChunkPopulator {
                     if (maxAirY != null && y > maxAirY && block.getType() == Material.AIR) {
                         break;
                     }
-                    if (biomes != null && !biomes.contains(block.getBiome()))
+                    if (biomes != null && !biomes.contains(CompatibilityLib.getCompatibilityUtils().getBlockBiome(block)))
                         continue;
-                    if (notBiomes != null && notBiomes.contains(block.getBiome()))
+                    if (notBiomes != null && notBiomes.contains(CompatibilityLib.getCompatibilityUtils().getBlockBiome(block)))
                         continue;
 
                     long now = System.currentTimeMillis();

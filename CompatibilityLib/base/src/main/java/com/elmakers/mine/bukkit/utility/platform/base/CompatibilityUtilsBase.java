@@ -1177,4 +1177,9 @@ public abstract class CompatibilityUtilsBase implements CompatibilityUtils {
         return "";
     }
 
+    @Override
+    public String getBlockBiome(Block block) {
+        return "";
+    }
+
 }

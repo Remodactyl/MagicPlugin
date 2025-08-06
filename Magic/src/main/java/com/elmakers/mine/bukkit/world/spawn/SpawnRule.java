@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.elmakers.mine.bukkit.utility.CompatibilityLib;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -39,8 +40,8 @@ public abstract class SpawnRule implements Comparable<SpawnRule> {
     protected boolean targetNPC;
     protected ConfigurationSection parameters;
     protected Set<String> tags;
-    protected Set<Biome> biomes;
-    protected Set<Biome> notBiomes;
+    protected Set<String> biomes;
+    protected Set<String> notBiomes;
     protected Set<EntityType> notTypes;
     protected boolean isGlobal;
 
@@ -148,8 +149,8 @@ public abstract class SpawnRule implements Comparable<SpawnRule> {
         if (tags != null && !controller.inTaggedRegion(entity.getLocation(), tags)) {
             return SpawnResult.SKIP;
         }
-        if (biomes != null && !biomes.contains(entity.getLocation().getBlock().getBiome())) return SpawnResult.SKIP;
-        if (notBiomes != null && notBiomes.contains(entity.getLocation().getBlock().getBiome())) return SpawnResult.SKIP;
+        if (biomes != null && !biomes.contains(CompatibilityLib.getCompatibilityUtils().getBlockBiome(entity.getLocation().getBlock()))) return SpawnResult.SKIP;
+        if (notBiomes != null && notBiomes.contains(CompatibilityLib.getCompatibilityUtils().getBlockBiome(entity.getLocation().getBlock()))) return SpawnResult.SKIP;
 
         if (!this.allowIndoors) {
             // Bump it up two to miss things like tall grass
